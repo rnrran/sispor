@@ -1,8 +1,50 @@
+'use client' ;
+
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react'
+import React, { useState } from 'react'
+
+import { signInWithEmailAndPassword, signInWithPopup,  } from 'firebase/auth'
+import { auth, googleProvider } from '../firebase'
+import { useRouter } from 'next/navigation';
+
 // import Image from 'next/image'
 const LoginPage = () =>{
+    const [email, setEmail] = useState();
+    const [password, setPassword] = useState();
+
+    const red = useRouter()
+
+    const handleEmail = (event) => {
+        setEmail(event.target.value)
+    }
+
+    const handlePassword = (event) => {
+        setPassword(event.target.value)
+    }
+
+    const handleLogin = async (event) => {
+        console.log('tes')
+        event.preventDefault(); // Mencegah perilaku default form
+
+        try{
+            await signInWithEmailAndPassword(auth, email, password)
+            red.push('/')
+        }
+        catch(e) {
+            alert('gagal')
+        }
+    }
+
+    const loginGoogle = async () => {
+        try {
+            await signInWithPopup(auth, googleProvider)
+            alert('Login berhasil')
+                red.push('/')
+        } catch(e) {
+            alert('error: '+e)
+        }
+    }
 
     return (
         <>
@@ -37,7 +79,7 @@ const LoginPage = () =>{
                                         <path
                                         d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
                                     </svg>
-                                    <input type="email" className="grow" placeholder="email" />
+                                    <input type="email" className="grow" placeholder="email" onChange={handleEmail} />
                                 </label>
 
                                 <label className="input input-bordered flex items-center gap-2">
@@ -51,11 +93,16 @@ const LoginPage = () =>{
                                         d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
                                         clipRule="evenodd" />
                                     </svg>
-                                    <input type="password" className="grow" placeholder='••••••••' />
+                                    <input type="password" className="grow" placeholder='••••••••' onChange={handlePassword} />
                                 </label>
+                                
                                 <div className="card-actions flex flex-auto flex-col items-center mt-5">
-                                    <button className="btn btn-block bg-white text-black hover:bg-gray-500 hover:text-white">Login</button>
-                                    <button className="btn btn-block bg-green-700 text-white hover:bg-green-800">Google</button>
+                                    <button className="btn btn-block bg-white text-black hover:bg-gray-500 hover:text-white" onClick={handleLogin}>Login</button>
+                                    
+                                </div>
+
+                                <div className="card-actions flex flex-auto flex-col items-center mt-2">
+                                <button className="btn btn-block bg-green-700 text-white hover:bg-green-800" onClick={loginGoogle}>Google</button>  
                                     <p className='text-gray-600 text-sm'>
                                         gada akun ? <Link href={'/daftar'} className='text-blue-300 hover:text-blue-500 underline'>
                                                         daftar

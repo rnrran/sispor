@@ -1,8 +1,43 @@
+'use client'
+
 import Image from "next/image"
 import Link from "next/link"
 
+import {auth} from '../firebase'
+import {signOut} from 'firebase/auth'
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+
 const Header = () => {
-    const udahLogin = false;
+    
+    // const udahLogin = auth.currentUser.email ? true : false;
+
+    const [udahLogin, setUdahLogin] = useState(false);
+    const router = useRouter();
+
+    useEffect(() => {
+        const unsubscribe = auth.onAuthStateChanged(user => {
+            if (user) {
+                setUdahLogin(true);
+            } else {
+                setUdahLogin(false);
+            }
+        });
+
+        // Cleanup subscription on unmount
+        return () => unsubscribe();
+    }, []);
+
+    const handleLogout = async () => {
+        try {
+            await signOut(auth)
+            alert("berhasil logout !")
+            route.push('login')
+        } catch(e) {
+                alert(e)
+        }
+    }
+
     return (
         <>
         <header className="bg-base-100">
@@ -11,11 +46,11 @@ const Header = () => {
                         <div className="flex-1">
                             <a className="btn btn-ghost text-xl">sisfor</a>
                         </div>
+                        <div className="form-control">
+                            <input type="text" placeholder="Search" className="input input-bordered w-24 md:w-auto" />
+                        </div>
                             { udahLogin ?
                             (<div className="flex-none gap-2">
-                                <div className="form-control">
-                                <input type="text" placeholder="Search" className="input input-bordered w-24 md:w-auto" />
-                                </div>
                                 <div className="dropdown dropdown-end">
                                 
                                 <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
@@ -37,7 +72,7 @@ const Header = () => {
                                     </a>
                                     </li>
                                     <li><a>Settings</a></li>
-                                    <li><a>Logout</a></li>
+                                    <li><button onClick={handleLogout}>Logout</button></li>
                                 </ul>
                                 </div>
                             </div>)
@@ -59,6 +94,7 @@ const Header = () => {
                                         d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path>
                                     </svg>
                                     </summary>
+                                    
                                     <ul className="bg-base-100 rounded-t-none p-2">
                                         <li><Link href={'/login'}>Login</Link></li>
                                         <li><Link href={'/daftar'}>Regis</Link></li>
