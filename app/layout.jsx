@@ -29,6 +29,10 @@ const InnerLayout = ({ children }) => {
     if (isAuthenticated && (path === '/login' || path === '/daftar')) {
       push('/');
     }
+    if (!isAuthenticated && (path === '/upload')) {
+      alert('kamu belum login, jadi ga bisa upload 👍')
+      push('/login')
+    }
   }, [isAuthenticated, path, push]);
 
   return (
