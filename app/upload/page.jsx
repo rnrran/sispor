@@ -54,7 +54,7 @@ const UploadPage = () => {
         <div className="flex flex-col justify-center items-center mx-auto p-8 mt-4 rounded-lg shadow-lg">
             <h1 className="text-2xl font-bold">Upload Note</h1>
             <p className="text-gray-500 mt-2">Ketik notes anda dibawah:</p>
-
+            
             <textarea
                 value={note}
                 onChange={handleNoteChange}

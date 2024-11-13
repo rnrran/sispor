@@ -2,31 +2,72 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { auth, db } from '../../firebase';
-import { setDoc, doc, serverTimestamp } from 'firebase/firestore';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { setDoc, doc, serverTimestamp, getDoc, getDocs } from 'firebase/firestore';
+import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
+import { AuthContext } from '@/app/context/AuthContext';
 
 const UpdatePage = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [passwordValidator, setValidator] = useState('');
-    const [username, setUsername] = useState('');
-    const [angkatan, setAngkatan] = useState('');
-    const [jurusan, setJurusan] = useState('');
-    const [alamat, setAlamat] = useState('');
-    const [profileImage, setProfileImage] = useState(null);
+    const { currentUser } = useContext(AuthContext)
 
-    const red = useRouter();
+    const [password, setPassword]                   = useState('');
+    const [passwordValidator, setValidator]         = useState('');
+    const [username, setUsername]                   = useState('');
+    const [angkatan, setAngkatan]                   = useState('');
+    const [jurusan, setJurusan]                     = useState('');
+    const [alamat, setAlamat]                       = useState('');
+    const [bio, setBio]                             = useState('');
+    const [profileImage, setProfileImage]           = useState(null);
+    const [isChangePassword, setIsChangedPassword]  = useState(false);
+    const [oldPassword, setOldPassword]             = useState('')
 
-    const handleEmail = (event) => setEmail(event.target.value);
-    const handlePassword = (event) => setPassword(event.target.value);
-    const handleValidator = (e) => setValidator(e.target.value);
-    const handleUsername = (e) => setUsername(e.target.value);
-    const handleAngkatan = (e) => setAngkatan(e.target.value);
-    const handleJurusan = (e) => setJurusan(e.target.value);
-    const handleAlamat = (e) => setAlamat(e.target.value);
+
+    const handleValidator                   = (e) => setValidator(e.target.value);
+    const handleUsername                    = (e) => setUsername(e.target.value);
+    const handleAngkatan                    = (e) => setAngkatan(e.target.value);
+    const handleJurusan                     = (e) => setJurusan(e.target.value);
+    const handleAlamat                      = (e) => setAlamat(e.target.value);
+    const handleBio                         = (e) => setBio(e.target.value);
+    const handleOldPassword                 = (e) => setOldPassword(e.target.value)
+    const handlePassword                    = (event) => {
+        setPassword(event.target.value);
+        password.length > 6 ? setIsChangedPassword(true) : setIsChangedPassword(false)
+    }
+
+    console.log(password+":"+isChangePassword)
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                if (currentUser) {
+                    // Ambil dokumen spesifik berdasarkan UID dari currentUser
+                    const userDocRef = doc(db, "users", currentUser.uid);
+                    const userSnapshot = await getDoc(userDocRef);
+                    
+                    if (userSnapshot.exists()) {
+                        const userData = userSnapshot.data();
+                        console.log("User Data:", userData);
+    
+                        // Set state berdasarkan data yang diambil
+                        setUsername(userData.username || '');
+                        setAngkatan(userData.angkatan || '');
+                        setJurusan(userData.jurusan || '');
+                        setAlamat(userData.alamat || '');
+                        setBio(userData.bio || '');
+                        setProfileImage(userData.profileImage || null);
+                    } else {
+                        console.log("No such document!");
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+            }
+        };
+    
+        fetchUser();
+    }, [currentUser]);
+
 
     const handleImageUpload = (event) => {
         alert('belum ada storage!')
@@ -36,44 +77,74 @@ const UpdatePage = () => {
         // }
     };
 
-    const handleUpdate = async (event) => {
-        event.preventDefault(); // Mencegah perilaku default form
 
-        if (!email) {
-            alert("Email belum diisi");
+const handleUpdatePassword = async () => {
+    const user = auth.currentUser;
+
+    try {
+        if (!user) {
+            alert('Pengguna tidak ditemukan.');
             return;
         }
-        if (!password) {
-            alert("Password belum diisi");
-            return;
-        }
-        if (!passwordValidator) {
-            alert("Verifikasi password anda!");
-            return;
-        }
+
         if (password !== passwordValidator) {
             alert("Kedua password tidak sama!");
             return;
         }
 
-        try {
-            const res = await createUserWithEmailAndPassword(auth, email, password);
+        if (!oldPassword) {
+            alert("Password lama diperlukan untuk verifikasi.");
+            return;
+        }
 
-            await setDoc(doc(db, "users", res.user.uid), {
-                username: email.slice(0, email.indexOf("@")),
-                angkatan: null,
-                jurusan: null,
-                bio: null, 
-                createdAt: serverTimestamp(),
-                lastEditedAt: serverTimestamp(),
-                img: null,
-                poin: 0,
+        // Re-authenticate user
+        const credential = EmailAuthProvider.credential(user.email, oldPassword);
+        await reauthenticateWithCredential(user, credential);
+
+        // Jika re-authenticate berhasil, lakukan update password
+        await updatePassword(user, password);
+        alert("Password berhasil diperbarui!");
+
+        // Reset input
+        setPassword('');
+        setValidator('');
+
+    } catch (error) {
+        if (error.code === 'auth/wrong-password') {
+            alert('Password lama yang Anda masukkan salah.');
+        } else if (error.code === 'auth/user-mismatch') {
+            alert('Akun pengguna tidak cocok.');
+        } else if (error.code === 'auth/requires-recent-login') {
+            alert('Sesi Anda sudah lama, silakan login ulang.');
+        } else {
+            console.error("Error updating password:", error);
+            alert('Gagal memperbarui password. Coba lagi nanti.');
+        }
+    }
+};
+
+
+    const handleUpdate = async (event) => {
+        event.preventDefault(); // Mencegah perilaku default form
+
+        if (password) {
+            handleUpdatePassword()
+        }
+        
+        
+        try {
+            await setDoc(doc(db, "users", currentUser.uid), {
+                username     : username,
+                angkatan     : angkatan,
+                jurusan      : jurusan,
+                bio          : bio, 
+                lastEditedAt : serverTimestamp(),
+                // img          : null,
             });
 
-            alert("Registrasi sukses!");
-            red.push('/login');
+            alert("Update Berhasil !");
         } catch (e) {
-            alert('Email sudah terdaftar');
+            alert(e);
         }
     };
 
@@ -109,7 +180,7 @@ const UpdatePage = () => {
                                                 type="text"
                                                 value={username}
                                                 onChange={handleUsername}
-                                                placeholder="belum belajar fetching"
+                                                placeholder="usernmae masih kosong nih.."
                                                 className="input input-sm input-bordered"
                                             />
                                         </label>
@@ -125,7 +196,7 @@ const UpdatePage = () => {
                                                 min="2000"
                                                 value={angkatan}
                                                 onChange={handleAngkatan}
-                                                placeholder="belum belajar fetching"
+                                                placeholder="angkatan berapa kamu 🤬"
                                                 className="input input-sm input-bordered"
                                             />
                                         </label>
@@ -140,7 +211,7 @@ const UpdatePage = () => {
                                                 type="text"
                                                 value={jurusan}
                                                 onChange={handleJurusan}
-                                                placeholder="belum belajar fetching"
+                                                placeholder="juransan apa"
                                                 className="input input-sm input-bordered"
                                             />
                                         </label>
@@ -155,37 +226,53 @@ const UpdatePage = () => {
                                                 type="text"
                                                 value={alamat}
                                                 onChange={handleAlamat}
-                                                placeholder="belum belajar fetching"
+                                                placeholder="tinggal dimana ?"
                                                 className="input input-sm input-bordered"
                                             />
                                         </label>
                                     </div>
 
                                     <div className='flex mt-3'>
-                                        <label className="form-control w-1/2 mr-2">
+                                        {/* <label className={"form-control mr-2 " + isChangePassword ? "w-2/6" : "1/2"}> */}
+                                        <label className={"form-control mr-2 w-1/2"}>
+
                                             <div className="label">
-                                                <span className="label-text">Password</span>
+                                                <span className="label-text">Password <sup className='text-red-600'>*</sup></span>
                                             </div>
                                             <input
                                                 type="password"
                                                 value={password}
                                                 onChange={handlePassword}
-                                                placeholder="* * * * * * * *"
+                                                placeholder="rahasia 🤫"
                                                 className="input input-sm input-bordered"
                                             />
                                         </label>
-                                        <label className="form-control w-1/2">
+                                        <label className={"form-control mr-2 w-1/2"}>
+                                        {/* <label className={"form-control mr-2 " + isChangePassword ? "w-2/6" : "1/2"}> */}
                                             <div className="label">
-                                                <span className="label-text">Verif Password</span>
+                                                <span className="label-text">Verif Password <sup className='text-red-600'>*</sup></span>
                                             </div>
                                             <input
                                                 type="password"
                                                 value={passwordValidator}
                                                 onChange={handleValidator}
-                                                placeholder="* * * * * * * *"
+                                                placeholder="verif rahasianya 🤫"
                                                 className="input input-sm input-bordered"
                                             />
                                         </label>
+
+                                        {isChangePassword ? <label className="form-control w-2/6">
+                                            <div className="label">
+                                                <span className="label-text">Password Lama <sup className='text-red-600'>*</sup></span>
+                                            </div>
+                                            <input
+                                                type="password"
+                                                value={oldPassword}
+                                                onChange={handleOldPassword}
+                                                placeholder="verif lagi rahasianya hhh.."
+                                                className="input input-sm input-bordered"
+                                            />
+                                        </label> : null}
                                     </div>
                                 </div>
 
@@ -213,6 +300,14 @@ const UpdatePage = () => {
                                 </div>
                             </div>
 
+                            <div>
+                            <textarea
+                                onChange={handleBio}
+                                className="mt-4 mb-2 p-4 border rounded-md w-[50rem] md:w-[60rem] h-[20rem] md:h-[18rem] md:h-66 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                placeholder="bio..."
+                            />
+                            </div>
+
                             <div className="card-actions flex flex-auto flex-col items-center mt-5">
                                 <button className="btn btn-block bg-green-700 text-white hover:bg-green-800">Update</button>
                             </div>
@@ -226,3 +321,4 @@ const UpdatePage = () => {
 };
 
 export default UpdatePage;
+                           
