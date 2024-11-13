@@ -70,7 +70,7 @@ const UpdatePage = () => {
 
 
     const handleImageUpload = (event) => {
-        alert('belum ada storage!')
+        alert('pinjem kredit buat storage ! 😊')
         // const file = event.target.files[0];
         // if (file) {
         //     setProfileImage(URL.createObjectURL(file));
@@ -84,17 +84,22 @@ const handleUpdatePassword = async () => {
     try {
         if (!user) {
             alert('Pengguna tidak ditemukan.');
-            return;
+            return false;
+        }
+
+        if (password.length < 6){
+            alert("Panjang password harus > 6")
+            return false;
         }
 
         if (password !== passwordValidator) {
             alert("Kedua password tidak sama!");
-            return;
+            return false;
         }
 
         if (!oldPassword) {
             alert("Password lama diperlukan untuk verifikasi.");
-            return;
+            return false;
         }
 
         // Re-authenticate user
@@ -108,6 +113,7 @@ const handleUpdatePassword = async () => {
         // Reset input
         setPassword('');
         setValidator('');
+        return true;
 
     } catch (error) {
         if (error.code === 'auth/wrong-password') {
@@ -142,7 +148,10 @@ const handleUpdatePassword = async () => {
                 // img          : null,
             });
 
-            alert("Update Berhasil !");
+            // if (handleUpdatePassword === true){
+
+            !password ? alert("Update Berhasil !") : null
+            // }
         } catch (e) {
             alert(e);
         }
@@ -300,12 +309,12 @@ const handleUpdatePassword = async () => {
                                 </div>
                             </div>
 
-                            <div>
-                            <textarea
-                                onChange={handleBio}
-                                className="mt-4 mb-2 p-4 border rounded-md w-[50rem] md:w-[60rem] h-[20rem] md:h-[18rem] md:h-66 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                placeholder="bio..."
-                            />
+                            <div className='flex flex-col items-center mt-10'> 
+                                <textarea
+                                    onChange={handleBio}
+                                    className="textarea textarea-bordered w-10/12 h-4/5"
+                                    placeholder="kono bio da!!!"
+                                />
                             </div>
 
                             <div className="card-actions flex flex-auto flex-col items-center mt-5">

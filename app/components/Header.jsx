@@ -45,7 +45,7 @@ const Header = () => {
                             <Link href='/' className="btn btn-ghost text-xl">sisfor</Link>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Link href={'/upload'} className="btn btn-ghost text-xl">
+                            <Link disabled={currentUser ? false : true} href={'/upload'} className="btn btn-ghost btn-sm text-xl">
                             Upload
                             </Link>
                             <div className="form-control">
@@ -70,10 +70,15 @@ const Header = () => {
                                     className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
                                     <li>
                                         <div className="flex flex-row">
-                                                <Link href="/profile"className="justify-between">
+                                            <div className="items-start">
+                                                <Link href="/profile">
                                                     Profile
                                                 </Link>
-                                                <Link href={'/profile/update'} className="badge-xs badge-success rounded-xl items-end">edit</Link>
+                                            </div>
+                                            
+                                            <div className="items-end">
+                                                <Link href={'/profile/update'} className="badge-xs badge-success rounded-xl">edit</Link>
+                                            </div>
                                         </div>
                                     </li>
                                     <li><a>Settings</a></li>
