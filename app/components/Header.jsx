@@ -29,8 +29,8 @@ const Header = () => {
             )
 
             alert("berhasil logout !")
-            
-            router.push('/login')
+            push('/')
+          
         } catch(e) {
                 alert(e)
         }
@@ -44,8 +44,13 @@ const Header = () => {
                         <div className="flex-1">
                             <a className="btn btn-ghost text-xl">sisfor</a>
                         </div>
-                        <div className="form-control">
+                        <div className="flex items-center space-x-2">
+                            <Link href={'/upload'} className="btn btn-ghost text-xl">
+                            Upload
+                            </Link>
+                            <div className="form-control">
                             <input type="text" placeholder="Search" className="input input-bordered w-24 md:w-auto" />
+                            </div>
                         </div>
                             { currentUser ?
                             (<div className="flex-none gap-2">
