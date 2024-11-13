@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { LinkProfile } from './LinkProfile';
+import Link from 'next/link';
 const UserProfile = () => {
   return (
     <div className="container">
@@ -19,7 +20,7 @@ const UserProfile = () => {
           </div>
         </div>
         <div className='w-full text-right justify-end items-end'>
-           <button className="bg-[#00a46e] text-white rounded-md mt-10 px-8 py-2 text-[16px] w-fit">Edit Mode</button>
+           <Link href={"/profile/update"} className="bg-[#00a46e] text-white rounded-md mt-10 px-8 py-2 text-[16px] w-fit">Edit Mode</Link>
         </div>
       </section> 
 
