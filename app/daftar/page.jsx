@@ -73,6 +73,7 @@ const RegisPage = () => {
                 createdAt   : serverTimestamp(),
                 lastEditedAt: serverTimestamp(),
                 img         : null,
+                alamat      : 'rumah',
                 poin        : 0,
             })
             

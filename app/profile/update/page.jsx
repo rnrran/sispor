@@ -144,6 +144,7 @@ const handleUpdatePassword = async () => {
                 angkatan     : angkatan,
                 jurusan      : jurusan,
                 bio          : bio, 
+                alamat       : alamat,
                 lastEditedAt : serverTimestamp(),
                 // img          : null,
             });
