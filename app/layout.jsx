@@ -2,6 +2,7 @@
 import localFont from "next/font/local";
 import "./globals.css";
 import Header from './components/Header'
+import Footer from './components/Footer'
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { auth } from './firebase'
@@ -54,6 +55,8 @@ const InnerLayout = ({ children }) => {
           <main className="container mx-auto">
             {children}
           </main>
+          {path == '/' ? <Footer /> : null}
+          {/* <Footer></Footer> */}
         </body>
       </html>
     </>
