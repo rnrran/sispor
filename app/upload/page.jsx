@@ -1,12 +1,9 @@
-'use client' ;
+'use client';
 
-
-import React, { useState } from 'react'
-
+import React, { useState } from 'react';
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
-import { app } from '../firebase'; // Import your Firebase app instance
-import { useRouter } from 'next/navigation';
+import { app } from '../firebase'; // Your Firebase app configuration
 
 const UploadPage = () => {
     const [note, setNote] = useState('');
@@ -16,7 +13,7 @@ const UploadPage = () => {
     // Get current user from Firebase Authentication
     const auth = getAuth(app);
     const user = auth.currentUser;
-    
+
     const handleNoteChange = (event) => {
         setNote(event.target.value);
     };
@@ -24,13 +21,18 @@ const UploadPage = () => {
     const handleUpload = async () => {
         if (!note.trim()) return alert("Please enter a note to upload.");
 
+        if (!user) {
+            alert('You must be logged in to upload a note.');
+            return;
+        }
+
         setUploading(true);
 
         try {
             // Get Firestore instance
             const db = getFirestore(app);
             const notesCollection = collection(db, 'notes'); // 'notes' is your Firestore collection name
-            
+
             // Add the note to Firestore with the userId (uid)
             await addDoc(notesCollection, {
                 content: note,
@@ -56,7 +58,7 @@ const UploadPage = () => {
             <textarea
                 value={note}
                 onChange={handleNoteChange}
-                className="mt-4 mb-2 p-4 border rounded w-full h-40"
+                className="mt-4 mb-2 p-4 border rounded-md w-[50rem] md:w-[60rem] h-[20rem] md:h-[18rem] md:h-66 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter your note here..."
             />
 
