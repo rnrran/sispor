@@ -1,0 +1,68 @@
+/* Styling untuk Hero Section */
+.hero {
+  background-image: url("/background.jpg"); /* Ganti dengan path gambar latar belakang */
+  background-size: cover;
+  background-position: center;
+  height: 100vh; /* Menggunakan full height layar */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.hero .overlay {
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.5
+  ); /* Layer hitam transparan di atas gambar */
+  padding: 20px;
+  text-align: center;
+}
+
+.hero .quote {
+  font-size: 3rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* Memberikan efek bayangan agar teks lebih jelas */
+}
+
+/* Styling Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #333; /* Warna navbar */
+  color: white;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.navbar .logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.navbar .menu {
+  display: flex;
+  gap: 15px;
+}
+
+.navbar .menu a {
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+.navbar .menu a:hover {
+  color: #f0f0f0; /* Hover effect */
+}
+
+/* Untuk menghindari konten yang tertutup Navbar */
+.container {
+  padding-top: 100px; /* Menyediakan ruang agar konten tidak tertutup Navbar */
+}
