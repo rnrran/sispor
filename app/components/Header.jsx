@@ -5,34 +5,32 @@ import Link from "next/link"
 
 import {auth} from '../firebase'
 import {signOut} from 'firebase/auth'
-import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { usePathname, useRouter } from "next/navigation"
+import { useContext, useEffect, useState } from "react"
+import { AuthContext } from "../context/AuthContext"
+
+
 
 const Header = () => {
     
     // const udahLogin = auth.currentUser.email ? true : false;
 
     const [udahLogin, setUdahLogin] = useState(false);
-    const router = useRouter();
-
-    useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged(user => {
-            if (user) {
-                setUdahLogin(true);
-            } else {
-                setUdahLogin(false);
-            }
-        });
-
-        // Cleanup subscription on unmount
-        return () => unsubscribe();
-    }, []);
+    const { push } = useRouter();
+    const {dispatch, currentUser} = useContext(AuthContext)
 
     const handleLogout = async () => {
         try {
             await signOut(auth)
+            .then(
+                () => {
+                    dispatch({type:"LOGOUT"})
+                }
+            )
+
             alert("berhasil logout !")
-            router.push('login')
+            push('/')
+          
         } catch(e) {
                 alert(e)
         }
@@ -54,7 +52,7 @@ const Header = () => {
                             <input type="text" placeholder="Search" className="input input-bordered w-24 md:w-auto" />
                             </div>
                         </div>
-                            { udahLogin ?
+                            { currentUser ?
                             (<div className="flex-none gap-2">
                                 <div className="dropdown dropdown-end">
                                 

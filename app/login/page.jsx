@@ -2,17 +2,20 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 
 import { signInWithEmailAndPassword, signInWithPopup,  } from 'firebase/auth'
 import { auth, googleProvider } from '../firebase'
 import { useRouter } from 'next/navigation';
+import { AuthContext } from '../context/AuthContext';
 
 // import Image from 'next/image'
 const LoginPage = () =>{
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
 
+    // dari keperluan login
+    const {dispatch} = useContext(AuthContext)
     const red = useRouter()
 
     const handleEmail = (event) => {
@@ -24,11 +27,15 @@ const LoginPage = () =>{
     }
 
     const handleLogin = async (event) => {
-        console.log('tes')
         event.preventDefault(); // Mencegah perilaku default form
 
         try{
             await signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                // login
+                const user = userCredential.user;
+                dispatch({type:"LOGIN", payload:user})
+            })
             red.push('/')
         }
         catch(e) {

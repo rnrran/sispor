@@ -6,7 +6,8 @@ import Link from 'next/link';
 
 import React, { useState } from 'react'
 
-import {auth} from '../firebase'
+import {auth, db} from '../firebase'
+import {setDoc, doc, serverTimestamp} from 'firebase/firestore'
 import {createUserWithEmailAndPassword} from 'firebase/auth'
 import { redirect, useRouter } from 'next/navigation';
 
@@ -34,6 +35,10 @@ const RegisPage = () => {
     }
     
 
+
+
+
+
     const handleRegis = async (event) => {
         event.preventDefault(); // Mencegah perilaku default form
 
@@ -58,7 +63,20 @@ const RegisPage = () => {
         }
 
         try {
-            await createUserWithEmailAndPassword(auth, email, password)
+
+            const res = await createUserWithEmailAndPassword(auth, email, password)
+
+            await setDoc(doc(db, "users", res.user.uid), {
+                username    : email.slice(0, email.indexOf("@")),
+                angkatan    : null,
+                jurusan     : null,
+                bio         : null, 
+                createdAt   : serverTimestamp(),
+                lastEditedAt: serverTimestamp(),
+                img         : null,
+                poin        : 0,
+            })
+            
             alert("Registrasi sukses !");
             red.push('/login')
 
