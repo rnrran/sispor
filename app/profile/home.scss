@@ -1,0 +1,95 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+
+.profile-picture {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.profile-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-info h2 {
+  font-size: 24px;  /* Increase font size for name */
+  font-weight: bold;  /* Make the name bold */
+}
+
+.profile-info p {
+  font-size: 18px;  /* Increase font size for ID */
+  color: #666;  /* Make the ID slightly lighter for distinction */
+}
+
+
+.notes-section {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  flex: 1;
+}
+
+.note-card {
+  width: 30%;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  margin-right: 20px;
+  box-sizing: border-box;
+}
+
+.note-img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+}
+
+.note-title {
+  padding: 10px;
+  background-color: #f4f4f4;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Media Query for Smaller Screens */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .profile-section {
+    width: 100%;
+    margin-right: 0;
+    align-items: center;
+  }
+
+  .note-card {
+    width: 100%;
+    margin-right: 0;
+  }
+
+  .edit-mode {
+    background-color: transparent;
+    border: 1px solid #007bff;
+    color: #007bff;
+    cursor: pointer;
+    margin-top: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    width: 100%; /* Make button full width */
+    text-align: center;
+    display: block; /* Make the button block-level */
+    margin-top: 20px; /* Ensure spacing between button and profile info */
+  }
+  
+}
