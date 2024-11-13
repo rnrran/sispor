@@ -32,7 +32,7 @@ const Header = () => {
         try {
             await signOut(auth)
             alert("berhasil logout !")
-            route.push('login')
+            router.push('login')
         } catch(e) {
                 alert(e)
         }

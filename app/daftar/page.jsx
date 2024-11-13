@@ -72,7 +72,7 @@ const RegisPage = () => {
                 <div className="card card-compact bg-base-100 w-96 shadow-xl">
                     <div className="card-body">
                         <div className='flex flex-col items-center'>
-                            <h2 className="card-title items-center">Login</h2>
+                            <h2 className="card-title items-center">Daftar</h2>
                         </div>
                         <figure>
                             <Image
