@@ -14,7 +14,6 @@ import { redirect, useRouter } from 'next/navigation';
 
 // import Image from 'next/image'
 const RegisPage = () => {
-    // console.log(auth)
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -74,6 +73,7 @@ const RegisPage = () => {
                 createdAt   : serverTimestamp(),
                 lastEditedAt: serverTimestamp(),
                 img         : null,
+                alamat      : 'rumah',
                 poin        : 0,
             })
             

@@ -2,6 +2,7 @@
 import localFont from "next/font/local";
 import "./globals.css";
 import Header from './components/Header'
+import Footer from './components/Footer'
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { auth } from './firebase'
@@ -26,12 +27,20 @@ const InnerLayout = ({ children }) => {
   const isAuthenticated = currentUser ? true : false;
 
   useEffect(() => {
+    // kalo udah login ini dilarang
     if (isAuthenticated && (path === '/login' || path === '/daftar')) {
       push('/');
     }
-    if (!isAuthenticated && (path === '/upload')) {
-      alert('kamu belum login, jadi ga bisa upload 👍')
-      push('/login')
+    // kalo belum login ini dilarang
+    if (!isAuthenticated && 
+          (
+            (path === '/upload') ||
+            (path === '/profile') ||
+            (path === '/profile/update')
+          )
+      ) {
+            alert('kamu belum login, jadi ga bisa buka ini 👍')
+            push('/login')
     }
   }, [isAuthenticated, path, push]);
 
@@ -46,6 +55,8 @@ const InnerLayout = ({ children }) => {
           <main className="container mx-auto">
             {children}
           </main>
+          {path == '/' ? <Footer /> : null}
+          {/* <Footer></Footer> */}
         </body>
       </html>
     </>
