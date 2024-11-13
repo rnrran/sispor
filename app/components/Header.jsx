@@ -29,8 +29,8 @@ const Header = () => {
             )
 
             alert("berhasil logout !")
-            router.push('login')
-            push('login')
+            
+            router.push('/login')
         } catch(e) {
                 alert(e)
         }
