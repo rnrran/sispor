@@ -42,7 +42,7 @@ const Header = () => {
             <div className="container mx-auto">
                     <div className="navbar mx-auto">
                         <div className="flex-1">
-                            <a className="btn btn-ghost text-xl">sisfor</a>
+                            <Link href='/' className="btn btn-ghost text-xl">sisfor</Link>
                         </div>
                         <div className="flex items-center space-x-2">
                             <Link href={'/upload'} className="btn btn-ghost text-xl">
@@ -69,9 +69,10 @@ const Header = () => {
                                     tabIndex={0}
                                     className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
                                     <li>
-                                    <Link href="/profile"className="justify-between">
-                                        Profile
-                                    </Link>
+                                        <Link href="/profile"className="justify-between">
+                                            Profile
+                                            <Link href="/profile/update" className="badge">update</Link>
+                                        </Link>
                                     </li>
                                     <li><a>Settings</a></li>
                                     <li><button onClick={handleLogout}>Logout</button></li>

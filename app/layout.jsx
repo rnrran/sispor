@@ -26,12 +26,20 @@ const InnerLayout = ({ children }) => {
   const isAuthenticated = currentUser ? true : false;
 
   useEffect(() => {
+    // kalo udah login ini dilarang
     if (isAuthenticated && (path === '/login' || path === '/daftar')) {
       push('/');
     }
-    if (!isAuthenticated && (path === '/upload')) {
-      alert('kamu belum login, jadi ga bisa upload 👍')
-      push('/login')
+    // kalo belum login ini dilarang
+    if (!isAuthenticated && 
+          (
+            (path === '/upload') ||
+            (path === '/profile') ||
+            (path === '/profile/update')
+          )
+      ) {
+            alert('kamu belum login, jadi ga bisa buka ini 👍')
+            push('/login')
     }
   }, [isAuthenticated, path, push]);
 
