@@ -4,31 +4,46 @@ import "./globals.css";
 import Header from './components/Header'
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
+import { auth } from './firebase'
 
-export default function RootLayout({
-  children
-}){
+// context
+import { AuthContext, AuthContextProvider } from './context/AuthContext'
+import { useContext, useEffect, useState } from "react";
 
-  const path = usePathname()
-  const red = useRouter()
-  // buat redirect kalo udah login ga bisa akses page tertentu
-  const isAuthenticated = false
-  if (isAuthenticated && (path === '/login' || path === '/daftar')) {
-    red.push('/')
-  }
-
+export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <head>
-        <title>Sisfor</title>
-      </head>
-      <body>
-        <Header/>
-        
-        <main className="container mx-auto">
-          {children}
-        </main>
-      </body>
-    </html>
+    <AuthContextProvider>
+      <InnerLayout>{children}</InnerLayout>
+    </AuthContextProvider>
   );
 }
+
+const InnerLayout = ({ children }) => {
+  const path = usePathname();
+  const { push } = useRouter();
+  const { currentUser } = useContext(AuthContext);
+
+  const isAuthenticated = currentUser ? true : false;
+
+  useEffect(() => {
+    if (isAuthenticated && (path === '/login' || path === '/daftar')) {
+      push('/');
+    }
+  }, [isAuthenticated, path, push]);
+
+  return (
+    <>
+      <html lang="en">
+        <head>
+          <title>Sisfor</title>
+        </head>
+        <body>
+          <Header />
+          <main className="container mx-auto">
+            {children}
+          </main>
+        </body>
+      </html>
+    </>
+  );
+};
