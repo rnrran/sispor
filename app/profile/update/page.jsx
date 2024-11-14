@@ -310,13 +310,15 @@ const handleUpdatePassword = async () => {
                                 </div>
                             </div>
 
-                            <div className='flex flex-col items-center mt-10'> 
+                            <div className='flex flex-col mt-10 items-center'> 
                                 <textarea
+                                    value={bio}
                                     onChange={handleBio}
-                                    className="textarea textarea-bordered w-10/12 h-4/5"
+                                    className="textarea textarea-bordered w-full h-4/5"
                                     placeholder="kono bio da!!!"
                                 />
                             </div>
+                            <div className='label-text-alt text-right'>bio</div>
 
                             <div className="card-actions flex flex-auto flex-col items-center mt-5">
                                 <button className="btn btn-block bg-green-700 text-white hover:bg-green-800">Update</button>
