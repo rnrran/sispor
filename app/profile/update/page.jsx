@@ -38,7 +38,8 @@ const UpdatePage = () => {
         password.length > 6 ? setIsChangedPassword(true) : setIsChangedPassword(false)
     }
 
-    console.log(password+":"+isChangePassword)
+    // console.log(password+":"+isChangePassword)
+
     useEffect(() => {
         const fetchUser = async () => {
             try {
@@ -49,7 +50,8 @@ const UpdatePage = () => {
                     
                     if (userSnapshot.exists()) {
                         const userData = userSnapshot.data();
-                        console.log("User Data:", userData);
+
+                        // console.log("User Data:", userData);
     
                         // Set state berdasarkan data yang diambil
                         setUsername(userData.username || '');
