@@ -15,6 +15,7 @@ const UpdatePage = () => {
     const [password, setPassword]                   = useState('');
     const [passwordValidator, setValidator]         = useState('');
     const [username, setUsername]                   = useState('');
+    const [nim, setNim]                             = useState('');
     const [angkatan, setAngkatan]                   = useState('');
     const [jurusan, setJurusan]                     = useState('');
     const [alamat, setAlamat]                       = useState('');
@@ -26,6 +27,7 @@ const UpdatePage = () => {
 
     const handleValidator                   = (e) => setValidator(e.target.value);
     const handleUsername                    = (e) => setUsername(e.target.value);
+    const handleNim                         = (e) => setNim(e.target.value);
     const handleAngkatan                    = (e) => setAngkatan(e.target.value);
     const handleJurusan                     = (e) => setJurusan(e.target.value);
     const handleAlamat                      = (e) => setAlamat(e.target.value);
@@ -51,6 +53,7 @@ const UpdatePage = () => {
     
                         // Set state berdasarkan data yang diambil
                         setUsername(userData.username || '');
+                        setNim(userData.nim || '');
                         setAngkatan(userData.angkatan || '');
                         setJurusan(userData.jurusan || '');
                         setAlamat(userData.alamat || '');
@@ -145,6 +148,7 @@ const handleUpdatePassword = async () => {
                 jurusan      : jurusan,
                 bio          : bio, 
                 alamat       : alamat,
+                nim          : nim,
                 lastEditedAt : serverTimestamp(),
                 // img          : null,
             });
@@ -182,7 +186,7 @@ const handleUpdatePassword = async () => {
                                 {/* Kolom kiri untuk input teks */}
                                 <div className='flex flex-col w-8/12 pr-4'>
                                     <div className='flex mt-3'>
-                                        <label className="form-control w-full">
+                                        <label className="form-control w-full mr-2">
                                             <div className="label">
                                                 <span className="label-text">Username</span>
                                             </div>
@@ -190,7 +194,19 @@ const handleUpdatePassword = async () => {
                                                 type="text"
                                                 value={username}
                                                 onChange={handleUsername}
-                                                placeholder="usernmae masih kosong nih.."
+                                                placeholder="username masih kosong ..."
+                                                className="input input-sm input-bordered"
+                                            />
+                                        </label>
+                                        <label className="form-control w-full">
+                                            <div className="label">
+                                                <span className="label-text">Nim</span>
+                                            </div>
+                                            <input
+                                                type="text"
+                                                value={nim}
+                                                onChange={handleNim}
+                                                placeholder="nim kosong masih kosong.."
                                                 className="input input-sm input-bordered"
                                             />
                                         </label>
@@ -271,18 +287,19 @@ const handleUpdatePassword = async () => {
                                             />
                                         </label>
 
-                                        {isChangePassword ? <label className="form-control w-2/6">
-                                            <div className="label">
-                                                <span className="label-text">Password Lama <sup className='text-red-600'>*</sup></span>
-                                            </div>
-                                            <input
-                                                type="password"
-                                                value={oldPassword}
-                                                onChange={handleOldPassword}
-                                                placeholder="verif lagi rahasianya hhh.."
-                                                className="input input-sm input-bordered"
-                                            />
-                                        </label> : null}
+                                        {isChangePassword ? 
+                                            <label className="form-control w-1/2">
+                                                <div className="label">
+                                                    <span className="label-text">Password Lama <sup className='text-red-600'>*</sup></span>
+                                                </div>
+                                                <input
+                                                    type="password"
+                                                    value={oldPassword}
+                                                    onChange={handleOldPassword}
+                                                    placeholder="verif lagi rahasianya hhh.."
+                                                    className="input input-sm input-bordered"
+                                                />
+                                            </label> : null}
                                     </div>
                                 </div>
 
